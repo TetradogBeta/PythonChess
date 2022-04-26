@@ -159,34 +159,39 @@ class ChessModel:
 
 
     def _minimax(self,depth, board, alpha, beta, is_maximising_player,ai_white):
-    
+        result=None;
         if(depth == 0):
-            return - ChessModel._evaluate_board(board,ai_white)
-        elif(depth > 3):
-            legal_moves = self._find_best_moves(board, 0.75)
+            result= - ChessModel._evaluate_board(board,ai_white)
         else:
-            legal_moves = list(board.legal_moves)
+            if(depth > 3):
+                legal_moves = self._find_best_moves(board, 0.75)
+            else:
+                legal_moves = list(board.legal_moves)
 
-        if(is_maximising_player):
-            best_move = -9999
-            for move in legal_moves:
-                board.push(move)
-                best_move = max(best_move, self._minimax(depth-1, board, alpha, beta, not is_maximising_player,ai_white))
-                board.pop()
-                alpha = max(alpha, best_move)
-                if(beta <= alpha):
-                    return best_move
-            return best_move
-        else:
-            best_move = 9999
-            for move in legal_moves:
-                board.push(move)
-                best_move = min(best_move, self._minimax(depth-1, board, alpha, beta, not is_maximising_player,ai_white))
-                board.pop()
-                beta = min(beta, best_move)
-                if(beta <= alpha):
-                    return best_move
-            return best_move
+            if(is_maximising_player):
+                best_move = -9999
+                result= best_move;
+                for move in legal_moves:
+                    board.push(move)
+                    best_move = max(best_move, self._minimax(depth-1, board, alpha, beta, not is_maximising_player,ai_white))
+                    board.pop()
+                    alpha = max(alpha, best_move)
+                    if(beta <= alpha):
+                        result= best_move;
+                        break;
+   
+            else:
+                best_move = 9999
+                result= best_move
+                for move in legal_moves:
+                    board.push(move)
+                    best_move = min(best_move, self._minimax(depth-1, board, alpha, beta, not is_maximising_player,ai_white))
+                    board.pop()
+                    beta = min(beta, best_move)
+                    if(beta <= alpha):
+                        result= best_move;
+                        break;
+        return result;
 
 
     def _minimax_root(self,depth, board,ai_white, is_maximising_player = True):
